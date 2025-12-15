@@ -12,14 +12,21 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+  
 }
 
 
 model Product {
+  // id        String   @id @default(autoincrement()) // podriamos haber usado asi el id
   id        String   @id @default(uuid())
   name      String   @unique
   price     Float
 
+  available Boolean  @default(true)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // esto es para que Prisma cree un indice en la columna available
+  @@index([available])
 }
