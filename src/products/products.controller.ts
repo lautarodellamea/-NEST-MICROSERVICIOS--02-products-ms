@@ -1,12 +1,12 @@
 import {
   Controller,
   // Get,
-  Post,
+  // Post,
   // Body,
   // Patch,
-  Param,
+  // Param,
   // Delete,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -27,10 +27,10 @@ export class ProductsController {
 
   // @Get()
   @MessagePattern({ cmd: 'find_all_products' })
-  findAll(@Query() paginationDto: PaginationDto) {
+  findAll(@Payload() paginationDto: PaginationDto) {
     // return paginationDto; // para ver si esta llegando
 
-    return this.productsService.findAll(paginationDto);
+    return this.productsService.findAll(paginationDto || {});
   }
 
   // @Get(':id')

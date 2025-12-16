@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from 'src/prisma.service';
 import { PaginationDto } from 'src/common';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class ProductsService {
@@ -19,8 +20,8 @@ export class ProductsService {
     return product;
   }
 
-  async findAll(paginationDto: PaginationDto) {
-    const { page, limit } = paginationDto;
+  async findAll(paginationDto?: PaginationDto) {
+    const { page, limit } = paginationDto || {};
 
     const totalPages = await this.prisma.product.count({
       where: {
@@ -63,7 +64,11 @@ export class ProductsService {
     });
 
     if (!product) {
-      throw new NotFoundException(`Product with id #${id} not found`);
+      // throw new NotFoundException(`Product with id #${id} not found`);
+      throw new RpcException({
+        message: `Product with id #${id} not found`,
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
     }
 
     return product;
